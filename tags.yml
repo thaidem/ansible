@@ -1,0 +1,102 @@
+- hosts: webservers
+
+  tasks:
+    - name: update apt
+      ansible.builtin.apt:
+        name: apt
+        state: present
+        update_cache: yes
+      become: yes
+#      tags: [arya, sansa, tirion]
+
+    - name: install git
+      ansible.builtin.apt:
+        name: git-all
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: install make
+      ansible.builtin.apt:
+        name: make
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: install nodejs
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
+        update_cache: yes
+      become: yes
+#      tags: [arya, sansa, tirion]
+
+    - name: create arya
+      user:
+        name: arya
+        state: present
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+        createhome: yes
+        password: "arya"
+      tags: arya
+      become: yes
+
+ #   - name: set mode arya
+ #     file:
+ #       path: /home/arya
+ #       owner: arya
+ #       group: arya
+ #       mode: '0755'
+ #     tags: arya
+ #     become: yes
+
+    - name: create sansa
+      user:
+        name: sansa
+        state: present
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+        createhome: yes
+        password: "sansa"
+      tags: sansa
+      become: yes
+
+    - name: check sansa
+      getent:
+        database: passwd
+        key: "sansa"
+      tags: sansa
+      become: yes
+
+ #   - name: set mode sansa
+ #     file:
+ #       path: /home/sansa
+ #       owner: sansa
+ #       group: sansa
+ #       mode: '0755'
+ #     tags: sansa
+ #     become: yes
+
+    - name: create tirion
+      user:
+        name: tirion
+        state: present
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+        createhome: yes
+        password: "tirion"
+      tags: tirion
+      become: yes
+
+#    - name: set mode tirion
+#      file:
+#        path: /home/tirion
+#        owner: tirion
+#        group: tirion
+#        mode: '0755'
+#      tags: tirion
+#      become: yes
