@@ -1,0 +1,62 @@
+- hosts: webservers
+
+  vars:
+    root_dir: /usr/share/nginx/html
+    nginx_port: 91
+    msg: "This is server {{ ansible_hostname }}!"
+    str: "{{ msg | upper }}"
+    date: "{{ ansible_date_time['iso8601'] }}"
+    cowsay: "{{ cowsay_result.stdout_lines | join('\n') }}"
+
+
+  tasks:
+    - name: install cowsay
+      ansible.builtin.apt:
+        name: cowsay
+        state: latest
+      become: yes
+
+    - name: run cowsay
+      ansible.builtin.shell: 'cowsay "This is server {{ ansible_hostname }}"'
+      register: cowsay_result
+      become: yes
+
+    - name: print cowsay_result variable
+      ansible.builtin.debug:
+        var: cowsay_result
+      become: yes
+
+    - name: print cowsay_result variable
+      ansible.builtin.debug:
+        var: cowsay
+      become: yes
+
+    - name: install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: latest
+      become: yes
+
+    - name: copy index.html
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: "{{root_dir}}/index.html"
+#      with_items: cowsay_result.stdout_lines
+      become: yes
+
+
+    - name: update nginx config
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+      notify:
+        - restart nginx
+      become: yes
+
+  handlers:
+    - name: restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+      become: yes
+      become_method: sudo

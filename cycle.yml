@@ -33,6 +33,5 @@
         user: "{{ item }}"
         state: present
         key: "{{ lookup('file', '/home/dementy/ansible/files/id_ed25519.pub') }}"
-#        key: "{{ lookup('file', '/home/{{ item }}/.ssh/authorized_keys') }}"
       loop: "{{users}}"
       become: yes
