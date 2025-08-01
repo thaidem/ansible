@@ -1,0 +1,28 @@
+- hosts: webservers
+
+  vars:
+    root_dir: /usr/share/nginx/html
+#    nginx_port: 90
+#    str: "{{ ansible_facts['ansible_hostname'] }}"
+    msg: "This is server {{ ansible_hostname }}!"
+    str: "{{ msg | upper }}"
+    date: "{{ ansible_date_time['iso8601'] }}"
+#    str: "!!!"
+
+  tasks:
+#    - name: Print all available facts
+#      ansible.builtin.debug:
+#        var: ansible_facts
+#
+    - name: Show host name
+      ansible.builtin.debug:
+        msg: "{{ ansible_hostname }}"
+#        msg: "{{ ansible_facts['ansible_hostname'] }}"
+
+    - name: copy index.html
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: "{{root_dir}}/index.html"
+      become: yes
+
+

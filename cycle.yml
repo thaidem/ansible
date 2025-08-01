@@ -1,0 +1,38 @@
+- hosts: servers
+  gather_facts: no
+
+  vars:
+    users:
+      - jaime
+      - sansa
+      - robert
+
+  tasks:
+
+    - name: create user
+      user:
+        name: "{{ item }}"
+        state: present
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+        createhome: yes
+        password: "{{ item }}"
+      become: yes
+      loop: "{{users}}"
+
+    - name: copy .gitconfig
+      ansible.builtin.template:
+        src: templates/.gitconfig.j2
+        dest: "/home/{{item}}/.gitconfig"
+      loop: "{{users}}"
+      become: yes
+
+    - name: add key
+      ansible.posix.authorized_key:
+        user: "{{ item }}"
+        state: present
+        key: "{{ lookup('file', '/home/dementy/ansible/files/id_ed25519.pub') }}"
+#        key: "{{ lookup('file', '/home/{{ item }}/.ssh/authorized_keys') }}"
+      loop: "{{users}}"
+      become: yes
