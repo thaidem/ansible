@@ -1,0 +1,21 @@
+- hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: create user
+      user:
+        name: tirion
+        state: present
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+        createhome: yes
+        password: "tirion"
+      become: yes
+
+    - name: Добавить строку в файл
+      lineinfile:
+        path: /etc/sudoers
+        line: "tirion ALL=(ALL) NOPASSWD:/usr/bin/tail,/usr/bin/head,/usr/bin/less,/usr/bin/more"
+        state: present
+      become: yes

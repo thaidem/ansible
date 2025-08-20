@@ -1,0 +1,31 @@
+- hosts: webservers
+
+  tasks:
+    - name: update apt
+      ansible.builtin.apt:
+        name: apt
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: Install java
+      import_role:
+        name: zhan9san.java
+
+#    - name: Ставим bsmeding.gitlab_docker через роль
+#      import_role:
+#        name: bsmeding.gitlab_docker
+
+    - name: Install KhalidOuatik.ansible_role_nodejs
+      import_role:
+        name: KhalidOuatik.ansible_role_nodejs
+
+    - name: Install noobient.postgresql
+      import_role:
+        name: noobient.postgresql
+
+
+#  roles: 
+#    - role: zhan9san.java
+#    - role: bsmeding.gitlab_docker
+#    - role: iam-jprasad.nodejs
